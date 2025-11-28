@@ -1,6 +1,6 @@
 - id: check-description-ends-with-dot
   name: Check column descriptions ends with a dot
   description: Check the column descriptions in YAML files to ensure they end with a period.
-  entry: check-description-ends-with-dot
+  entry: dbt_yaml_description_validator/check-dot.py
   language: python
   files: '.*\.(yml|yaml)$'
