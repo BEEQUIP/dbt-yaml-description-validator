@@ -1,14 +1,3 @@
-"""
-manage_descriptions.py
-
-Recursively scans all schema.yml files in the current repository and
-checks or fixes that all model and column descriptions end with a period ('.').
-
-Usage:
-    python manage_descriptions.py          # Just checks
-    python manage_descriptions.py --fix    # Fixes missing periods
-"""
-
 from pathlib import Path
 import time
 import argparse
