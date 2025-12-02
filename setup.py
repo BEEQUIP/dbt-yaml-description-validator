@@ -10,7 +10,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "check-description-ends-with-dot=dbt_yaml_description_validator.check-dot:main"
+            "check-description-ends-with-dot=dbt_yaml_description_validator.check_dot:main"
         ]
     },
 )
