@@ -79,10 +79,6 @@ def main():
     Use the --fix flag to automatically append missing periods.
     Accepts optional file paths (used by pre-commit).
     """
-    import argparse
-    import time
-    from pathlib import Path
-    from tqdm import tqdm
 
     parser = argparse.ArgumentParser(
         description="Check or fix descriptions in schema.yml files."
