@@ -83,6 +83,9 @@ def process_file(path: Path, fix: bool = False) -> tuple[list[str], bool]:
 
 
 def main():
+    """
+    Docstring for main
+    """
     parser = argparse.ArgumentParser(description="Check/fix YAML descriptions.")
     parser.add_argument("--fix", action="store_true", help="Automatically fix missing periods")
     args = parser.parse_args()
