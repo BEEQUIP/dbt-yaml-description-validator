@@ -113,7 +113,7 @@ def main():
 
     if args.fix:
         fixed_count = 0
-        for file_path in tqdm(schema_files, desc="Fixing schema.yml files", unit="file", ncols=100):
+        for file_path in tqdm(schema_files, desc="Fixing schema.yml files", unit="file", ncols=100, disable=True):
             if process_file(file_path, fix=True):
                 fixed_count += 1
         print(f"\nProcessed {len(schema_files)} files; fixed descriptions in {fixed_count}.")
