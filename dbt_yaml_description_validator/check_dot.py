@@ -2,7 +2,6 @@ from pathlib import Path
 import time
 import argparse
 import yaml
-from tqdm import tqdm
 
 def normalize_description(description: str) -> str:
     """Ensure the description ends with a period."""
@@ -113,7 +112,7 @@ def main():
 
     if args.fix:
         fixed_count = 0
-        for file_path in tqdm(schema_files, desc="Fixing schema.yml files", unit="file", ncols=100, disable=True):
+        for file_path in schema_files:
             if process_file(file_path, fix=True):
                 fixed_count += 1
         print(f"\nProcessed {len(schema_files)} files; fixed descriptions in {fixed_count}.")
