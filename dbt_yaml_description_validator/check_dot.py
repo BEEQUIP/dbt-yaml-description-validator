@@ -6,20 +6,25 @@ from tqdm import tqdm
 
 def normalize_description(description: str) -> str:
     """Ensure the description ends with a period."""
-    if not isinstance(description, str):
+
+    lines = description.rstrip().splitlines()
+    if not lines:
         return description
 
-    description = description.strip()
-    if description and not description.endswith("."):
-        description += "."
-    return description
+    if not lines[-1].rstrip().endswith("."):
+        lines[-1] = lines[-1].rstrip() + "."
+
+    return "\n".join(lines)
 
 
 def check_description(description: str) -> bool:
     """Check if the description ends with a period."""
-    if not isinstance(description, str):
-        return True  # Non-strings are ignored
-    return description.strip().endswith(".")
+
+    lines = [line.rstrip() for line in description.rstrip().splitlines() if line.strip()]
+    if not lines:
+        return True
+    return lines[-1].endswith(".")
+
 
 
 def process_file(path: Path, fix: bool = False, errors: list = None) -> bool:
@@ -67,7 +72,6 @@ def process_file(path: Path, fix: bool = False, errors: list = None) -> bool:
     if fix and modified:
         with path.open("w", encoding="utf-8") as f:
             yaml.dump(data, f, sort_keys=False)
-
     return True
 
 
