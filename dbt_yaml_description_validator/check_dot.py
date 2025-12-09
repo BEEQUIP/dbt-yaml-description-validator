@@ -13,8 +13,8 @@ def normalize_description(description: str) -> str:
     if not lines[-1].rstrip().endswith("."):
         lines[-1] = lines[-1].rstrip() + "."
 
+    print("Fixed a description")
     return "\n".join(lines)
-
 
 def check_description(description: str) -> bool:
     """Check if the description ends with a period."""
@@ -109,8 +109,11 @@ def main():
     if not schema_files:
         print("No schema.yml files found to process.")
         return
+    
+    print("DEBUG0")
 
     if args.fix:
+        print("DEBUG1")
         fixed_count = 0
         for file_path in schema_files:
             if process_file(file_path, fix=True):
