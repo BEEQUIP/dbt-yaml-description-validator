@@ -33,7 +33,7 @@ def process_file(path: Path, errors: list) -> bool:
 
 
 def main():
-    start = time.time()
+    # start = time.time()
 
     repo_root = Path.cwd()
     schema_files = list(repo_root.rglob("**/schema.yml"))
@@ -46,17 +46,17 @@ def main():
             unparsable += 1
 
     # Print individual errors
-    if errors:
-        print("\n".join(errors))
+    # if errors:
+    #     print("\n".join(errors))
 
     # Print validation summary
-    duration = round(time.time() - start, 3)
-    print("\n--- Description Validation Summary ---")
-    print(f"Total schema.yml files found: {len(schema_files)}")
-    print(f"Unparsable files skipped: {unparsable}")
-    print(f"Descriptions missing final '.': {len(errors)}")
-    print(f"Runtime: {duration} seconds")
-    print("--------------------------------------\n")
+    # duration = round(time.time() - start, 3)
+    # print("\n--- Description Validation Summary ---")
+    # print(f"Total schema.yml files found: {len(schema_files)}")
+    # print(f"Unparsable files skipped: {unparsable}")
+    # print(f"Descriptions missing final '.': {len(errors)}")
+    # print(f"Runtime: {duration} seconds")
+    # print("--------------------------------------\n")
 
 if __name__ == "__main__":
     main()
