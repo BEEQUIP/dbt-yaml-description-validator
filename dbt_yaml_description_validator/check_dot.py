@@ -2,6 +2,7 @@ from pathlib import Path
 # import time
 import argparse
 import yaml
+import sys
 
 def normalize_description(description: str) -> str:
     """Ensure the description ends with a period."""
@@ -114,7 +115,8 @@ def main():
         for file_path in schema_files:
             if process_file(file_path, fix=True):
                 fixed_count += 1
-        print(f"\nProcessed {len(schema_files)} files; fixed descriptions in {fixed_count}.")
+        sys.exit(0)
+        
     else:
         errors = []
         unparsable_count = 0
@@ -122,17 +124,8 @@ def main():
             if not process_file(file_path, fix=False, errors=errors):
                 unparsable_count += 1
 
-        # if errors:
-        #     print("\n".join(errors))
-        
-        # print("\n--- Description Validation Summary ---")
-        # print(f"Total files processed: {len(schema_files)}")
-        # print(f"Unparsable files skipped: {unparsable_count}")
-        # print(f"Descriptions missing final period: {len(errors)}")
-        # print("--------------------------------------")
-
-    # duration = round(time.time() - start_time, 2)
-    # print(f"Total runtime: {duration} seconds")
+        if errors:
+            sys.exit(1)
 
 
 if __name__ == "__main__":
