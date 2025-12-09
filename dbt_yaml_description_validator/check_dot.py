@@ -126,11 +126,11 @@ def main():
         # if errors:
         #     print("\n".join(errors))
         
-        print("\n--- Description Validation Summary ---")
-        print(f"Total files processed: {len(schema_files)}")
-        print(f"Unparsable files skipped: {unparsable_count}")
-        print(f"Descriptions missing final period: {len(errors)}")
-        print("--------------------------------------")
+        # print("\n--- Description Validation Summary ---")
+        # print(f"Total files processed: {len(schema_files)}")
+        # print(f"Unparsable files skipped: {unparsable_count}")
+        # print(f"Descriptions missing final period: {len(errors)}")
+        # print("--------------------------------------")
 
     duration = round(time.time() - start_time, 2)
     print(f"Total runtime: {duration} seconds")
