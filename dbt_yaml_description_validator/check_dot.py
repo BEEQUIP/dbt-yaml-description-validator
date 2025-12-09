@@ -1,8 +1,8 @@
 from pathlib import Path
 # import time
 import argparse
-import yaml
 import sys
+import yaml
 
 def normalize_description(description: str) -> str:
     """Ensure the description ends with a period."""
@@ -109,14 +109,14 @@ def main():
     if not schema_files:
         print("No schema.yml files found to process.")
         return
-    
+
     if args.fix:
         fixed_count = 0
         for file_path in schema_files:
             if process_file(file_path, fix=True):
                 fixed_count += 1
         sys.exit(0)
-        
+
     else:
         errors = []
         unparsable_count = 0
