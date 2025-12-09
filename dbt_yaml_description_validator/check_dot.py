@@ -70,7 +70,7 @@ def process_file(path: Path, fix: bool = False, errors: list = None) -> bool:
     if fix and modified:
         with path.open("w", encoding="utf-8") as f:
             yaml.dump(data, f, sort_keys=False)
-    return True
+    return modified
 
 
 def main():
