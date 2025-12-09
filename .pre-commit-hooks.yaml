@@ -1,6 +1,11 @@
 - id: check-description-ends-with-dot
   name: Check column descriptions ends with a dot
-  entry: check-description-ends-with-dot  # console script uit setup.py
+  entry: check-description-ends-with-dot
   language: python
   files: '.*\.(yml|yaml)$'
   args: ["--fix"]
+- id: check-description-starts-with-capital
+  name: Check descriptions start with a capital letter
+  entry: check-description-starts-with-capital
+  language: python
+  files: '.*\.(yml|yaml)$'
