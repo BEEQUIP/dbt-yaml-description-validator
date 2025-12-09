@@ -1,5 +1,5 @@
 from pathlib import Path
-import time
+# import time
 import argparse
 import yaml
 
@@ -98,7 +98,7 @@ def main():
     )
     args = parser.parse_args()
 
-    start_time = time.time()
+    # start_time = time.time()
 
     # Determine target files
     if args.files:
@@ -132,8 +132,8 @@ def main():
         # print(f"Descriptions missing final period: {len(errors)}")
         # print("--------------------------------------")
 
-    duration = round(time.time() - start_time, 2)
-    print(f"Total runtime: {duration} seconds")
+    # duration = round(time.time() - start_time, 2)
+    # print(f"Total runtime: {duration} seconds")
 
 
 if __name__ == "__main__":
