@@ -123,8 +123,9 @@ def main():
             if not process_file(file_path, fix=False, errors=errors):
                 unparsable_count += 1
 
-        if errors:
-            print("\n".join(errors))
+        # if errors:
+        #     print("\n".join(errors))
+        
         print("\n--- Description Validation Summary ---")
         print(f"Total files processed: {len(schema_files)}")
         print(f"Unparsable files skipped: {unparsable_count}")
