@@ -115,8 +115,8 @@ def main():
         process_file(file_path, fix=False, errors=errors)
 
     if errors:
-        for e in errors:
-            print(e)
+        # for e in errors:
+        #     print(e)
         sys.exit(1)
 
     sys.exit(0)
