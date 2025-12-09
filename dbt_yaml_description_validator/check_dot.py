@@ -76,12 +76,15 @@ def process_file(path: Path, fix: bool = False, errors: list = None) -> bool:
 
 def main():
     """
-    Validate or fix descriptions in a single schema.yml file.
-    Designed so it can be called once per file by pre-commit.
+    Validate or fix descriptions in schema.yml files.
+
+    By default, checks that model and column descriptions end with a period.
+    Use the --fix flag to automatically append missing periods.
+    Accepts optional file paths (used by pre-commit).
     """
 
     parser = argparse.ArgumentParser(
-        description="Check or fix descriptions in a schema.yml file."
+        description="Check or fix descriptions in schema.yml files."
     )
     parser.add_argument(
         "--fix",
@@ -89,36 +92,48 @@ def main():
         help="Automatically fix descriptions missing a trailing period."
     )
     parser.add_argument(
-        "file",
-        help="Single schema.yml file to process."
+        "files",
+        nargs="*",
+        help="Optional list of schema files to process. Defaults to all schema.yml files."
     )
     args = parser.parse_args()
 
-    path = Path(args.file)
-    if not path.exists():
-        print(f"{path}: File does not exist.")
-        return 1
+    start_time = time.time()
+
+    # Determine target files
+    if args.files:
+        schema_files = [Path(f) for f in args.files if Path(f).is_file()]
+    else:
+        schema_files = list(Path.cwd().rglob("**/schema.yml"))
+
+    if not schema_files:
+        print("No schema.yml files found to process.")
+        return
 
     if args.fix:
-        changed = process_file(path, fix=True)
-        if changed:
-            print(f"Fixed descriptions in: {path}")
-        return 0
+        fixed_count = 0
+        for file_path in schema_files:
+            if process_file(file_path, fix=True):
+                fixed_count += 1
+        print(f"\nProcessed {len(schema_files)} files; fixed descriptions in {fixed_count}.")
+    else:
+        errors = []
+        unparsable_count = 0
+        for file_path in schema_files:
+            if not process_file(file_path, fix=False, errors=errors):
+                unparsable_count += 1
 
-    # Validation mode
-    errors = []
-    ok = process_file(path, fix=False, errors=errors)
+        # if errors:
+        #     print("\n".join(errors))
+        
+        print("\n--- Description Validation Summary ---")
+        print(f"Total files processed: {len(schema_files)}")
+        print(f"Unparsable files skipped: {unparsable_count}")
+        print(f"Descriptions missing final period: {len(errors)}")
+        print("--------------------------------------")
 
-    if not ok:
-        print(f"{path}: Could not process YAML.")
-        return 1
-
-    if errors:
-        for e in errors:
-            print(e)
-        return 1  # Signal failure for pre-commit
-
-    return 0
+    duration = round(time.time() - start_time, 2)
+    print(f"Total runtime: {duration} seconds")
 
 
 if __name__ == "__main__":

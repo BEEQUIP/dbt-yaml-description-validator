@@ -2,3 +2,4 @@
   name: Check column descriptions ends with a dot
   entry: check-description-ends-with-dot  # console script uit setup.py
   language: python
+  files: '.*\.(yml|yaml)$'
