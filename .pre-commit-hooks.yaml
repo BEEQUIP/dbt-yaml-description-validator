@@ -3,3 +3,4 @@
   entry: check-description-ends-with-dot  # console script uit setup.py
   language: python
   files: '.*\.(yml|yaml)$'
+  args: ["--fix"]
