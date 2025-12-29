@@ -6,18 +6,11 @@ def check(text: str) -> bool:
 
 
 def fix(text: str) -> str:
-    if check(text):
-        return text
-
-    lines = text.splitlines()
+    lines = text.rstrip().splitlines()
     if not lines:
         return text
-
     last = lines[-1].rstrip()
+    if last.endswith("."):
+        return "\n".join(lines)
     lines[-1] = last + "."
-    result = "\n".join(lines)
-
-    if text.endswith("\n"):
-        result += "\n"
-
-    return result
+    return "\n".join(lines)
