@@ -27,3 +27,9 @@
   entry: dbt-yaml-description-validator --rule article
   language: python
   files: '(?i)schema\.ya?ml$'
+
+- id: check-description-no-symbols
+  name: Check descriptions do not contain symbols
+  entry: dbt-yaml-description-validator --rule symbols
+  language: python
+  files: '(?i)schema\.ya?ml$'
