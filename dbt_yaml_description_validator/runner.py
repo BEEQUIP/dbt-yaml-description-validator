@@ -118,8 +118,8 @@ def main() -> int:
             changed_any = True
 
     if errors:
-        for e in errors:
-            print(e)
+        # for e in errors:
+        #     print(e)
         return 1
 
     return 0
