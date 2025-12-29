@@ -34,7 +34,7 @@ def iter_nodes(data: dict) -> list[dict]:
     return nodes or []
 
 
-def iter_column_dicts(node: dict) -> list[dict]:
+def iter_columns(node: dict) -> list[dict]:
     return node.get("columns") or []
 
 
@@ -63,31 +63,27 @@ def main() -> int:
     fix_fn = getattr(rule, "fix", None)
 
     if not callable(check_fn):
-        print(f"Rule '{args.rule}' does not define a callable 'check(text)'.", file=sys.stderr)
         return 2
 
     if args.fix and not callable(fix_fn):
-        print(f"Rule '{args.rule}' does not support --fix.", file=sys.stderr)
         return 2
 
     schema_files = iter_schema_files(args.files)
     if not schema_files:
         return 0
 
-    errors: list[str] = []
+    failed = False
 
     for path in schema_files:
         try:
             data = load_yaml(path)
-        except Exception as exc:
-            errors.append(f"{path}: Could not parse YAML ({exc})")
-            continue
+        except Exception:
+            return 1
 
         nodes = iter_nodes(data)
         modified = False
 
         for node in nodes:
-            node_name = node.get("name")
             desc = node.get("description")
 
             if args.fix:
@@ -97,10 +93,9 @@ def main() -> int:
                     modified = True
             else:
                 if desc and not validate_text(check_fn, desc):
-                    errors.append(f"{path}: Model '{node_name}' failed rule '{args.rule}'")
+                    failed = True
 
-            for col in iter_column_dicts(node):
-                col_name = col.get("name")
+            for col in iter_columns(node):
                 cdesc = col.get("description")
 
                 if args.fix:
@@ -110,17 +105,15 @@ def main() -> int:
                         modified = True
                 else:
                     if cdesc and not validate_text(check_fn, cdesc):
-                        errors.append(f"{path}: Column '{col_name}' failed rule '{args.rule}'")
+                        failed = True
 
         if args.fix and modified:
             dump_yaml(path, data)
 
-    if errors:
-        # for e in errors:
-        #     print(e)
-        return 1
+    if args.fix:
+        return 0
 
-    return 0
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":
