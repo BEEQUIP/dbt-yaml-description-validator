@@ -6,5 +6,5 @@ RULES = {
     "article": article,
     "capital": capital,
     "dot": dot,
-    "symbol": symbol,
+    "symbols": symbol,
 }
