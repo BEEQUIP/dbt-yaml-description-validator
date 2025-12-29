@@ -116,8 +116,8 @@ def main() -> int:
             dump_yaml(path, data)
 
     if errors:
-        # for e in errors:
-        #     print(e)
+        for e in errors:
+            print(e)
         return 1
 
     return 0
