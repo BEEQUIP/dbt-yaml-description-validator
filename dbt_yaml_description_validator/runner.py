@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from typing import Callable, Iterable
+from typing import Callable
 
 import yaml
 
@@ -75,7 +75,6 @@ def main() -> int:
         return 0
 
     errors: list[str] = []
-    changed_any = False
 
     for path in schema_files:
         try:
@@ -115,7 +114,6 @@ def main() -> int:
 
         if args.fix and modified:
             dump_yaml(path, data)
-            changed_any = True
 
     if errors:
         # for e in errors:
