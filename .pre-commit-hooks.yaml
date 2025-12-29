@@ -36,12 +36,12 @@
 
 - id: check-description-no-double-spaces
   name: Check descriptions do not contain double spaces
-  entry: dbt-yaml-description-validator --rule double_space
+  entry: dbt-yaml-description-validator --rule spaces
   language: python
   files: '(?i)schema\.ya?ml$'
 
 - id: fix-description-double-spaces
   name: Fix descriptions containing double spaces
-  entry: dbt-yaml-description-validator --rule double_space --fix
+  entry: dbt-yaml-description-validator --rule spaces --fix
   language: python
   files: '(?i)schema\.ya?ml$'
