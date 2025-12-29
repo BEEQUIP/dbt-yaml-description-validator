@@ -1,10 +1,29 @@
 - id: check-description-ends-with-dot
-  name: Check column descriptions ends with a dot
-  entry: check-description-ends-with-dot
+  name: Check descriptions end with a dot
+  entry: dbt-yaml-description-validator --rule dot
   language: python
-  files: '.*\.(yml|yaml)$'
+  files: '(?i)schema\.ya?ml$'
+
+- id: check-description-ends-with-dot-fix
+  name: Fix descriptions missing a trailing dot
+  entry: dbt-yaml-description-validator --rule dot --fix
+  language: python
+  files: '(?i)schema\.ya?ml$'
+
 - id: check-description-starts-with-capital
   name: Check descriptions start with a capital letter
-  entry: check-description-starts-with-capital
+  entry: dbt-yaml-description-validator --rule capital
   language: python
-  files: '.*\.(yml|yaml)$'
+  files: '(?i)schema\.ya?ml$'
+
+- id: check-description-starts-with-capital-fix
+  name: Fix descriptions not starting with a capital letter
+  entry: dbt-yaml-description-validator --rule capital --fix
+  language: python
+  files: '(?i)schema\.ya?ml$'
+
+- id: check-description-starts-with-article
+  name: Check descriptions start with an article (The, A, An)
+  entry: dbt-yaml-description-validator --rule article
+  language: python
+  files: '(?i)schema\.ya?ml$'

@@ -10,7 +10,6 @@ import yaml
 
 def fix_description(text: str) -> str:
     """Return a possibly fixed version of the description."""
-    # Example placeholder: ensure description starts with a capital letter
     if not text:
         return text
     stripped = text.lstrip()

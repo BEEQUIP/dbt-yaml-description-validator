@@ -6,12 +6,10 @@ setup(
     packages=find_packages(),
     install_requires=[
         "PyYAML>=5.1",
-        "tqdm"
     ],
     entry_points={
         "console_scripts": [
-            "check-description-ends-with-dot=dbt_yaml_description_validator.check_dot:main",
-            "check-description-starts-with-capital=dbt_yaml_description_validator.check_capital:main",
+            "dbt-yaml-description-validator=dbt_yaml_description_validator.runner:main",
         ]
     },
 )
