@@ -6,11 +6,18 @@ def check(text: str) -> bool:
 
 
 def fix(text: str) -> str:
-    lines = text.rstrip().splitlines()
+    had_trailing_newline = text.endswith("\n")
+
+    lines = text.rstrip("\n").splitlines()
     if not lines:
         return text
+
     last = lines[-1].rstrip()
-    if last.endswith("."):
-        return "\n".join(lines)
-    lines[-1] = last + "."
-    return "\n".join(lines)
+    if not last.endswith("."):
+        lines[-1] = last + "."
+
+    out = "\n".join(lines)
+    if had_trailing_newline:
+        out += "\n"
+    return out
+
