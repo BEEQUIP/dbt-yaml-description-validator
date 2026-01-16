@@ -5,9 +5,13 @@ import sys
 from pathlib import Path
 from typing import Callable
 
-import yaml
+from ruamel.yaml import YAML
 
 from dbt_yaml_description_validator.validators import RULES
+
+yaml = YAML()
+yaml.preserve_quotes = True
+yaml.default_flow_style = False
 
 
 def iter_schema_files(files: list[str]) -> list[Path]:
@@ -18,13 +22,13 @@ def iter_schema_files(files: list[str]) -> list[Path]:
 
 def load_yaml(path: Path) -> dict:
     with path.open("r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
+        data = yaml.load(f)
     return data or {}
 
 
 def dump_yaml(path: Path, data: dict) -> None:
     with path.open("w", encoding="utf-8") as f:
-        yaml.dump(data, f, sort_keys=False)
+        yaml.dump(data, f)
 
 
 def iter_nodes(data: dict) -> list[dict]:
@@ -62,6 +66,7 @@ def main() -> int:
     check_fn = getattr(rule, "check", None)
     fix_fn = getattr(rule, "fix", None)
 
+    # Check of de functies wel callable zijn
     if not callable(check_fn):
         print(f"Rule '{args.rule}' does not define a callable 'check(text)'.", file=sys.stderr)
         return 2

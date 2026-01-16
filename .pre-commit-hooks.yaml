@@ -5,7 +5,7 @@
   files: '(?i)schema\.ya?ml$'
 
 - id: check-description-ends-with-dot-fix
-  name: Fix descriptions missing a trailing dot
+  name: Check descriptions end with a dot (fix if failed)
   entry: dbt-yaml-description-validator --rule dot --fix
   language: python
   files: '(?i)schema\.ya?ml$'
@@ -17,7 +17,7 @@
   files: '(?i)schema\.ya?ml$'
 
 - id: check-description-starts-with-capital-fix
-  name: Fix descriptions not starting with a capital letter
+  name: Check descriptions start with a capital letter (fix if failed)
   entry: dbt-yaml-description-validator --rule capital --fix
   language: python
   files: '(?i)schema\.ya?ml$'
@@ -34,14 +34,15 @@
   language: python
   files: '(?i)schema\.ya?ml$'
 
-- id: check-description-no-double-spaces
+# TODO: Namen consistent aanpassen
+- id: check-description-double-spaces
   name: Check descriptions do not contain double spaces
   entry: dbt-yaml-description-validator --rule spaces
   language: python
   files: '(?i)schema\.ya?ml$'
 
-- id: fix-description-double-spaces
-  name: Fix descriptions containing double spaces
+- id: check-description-double-spaces-fix
+  name: Check descriptions do not contain double spaces (fix if failed)
   entry: dbt-yaml-description-validator --rule spaces --fix
   language: python
   files: '(?i)schema\.ya?ml$'

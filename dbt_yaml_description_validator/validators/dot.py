@@ -1,3 +1,11 @@
+'''
+Check():    Checks whether the string is non empty and ends with a dot
+fix():      Adds a trailing dot to the last line in the description if it did not have one.
+
+Also removes leading white spaces.
+'''
+
+
 def check(text: str) -> bool:
     lines = [line.rstrip() for line in text.rstrip().splitlines() if line.strip()]
     if not lines:
