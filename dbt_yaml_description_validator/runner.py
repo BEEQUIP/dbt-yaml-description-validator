@@ -215,7 +215,7 @@ def main() -> int:
                         errors.append(f"{path}: Column '{col_name}' failed rule '{args.rule}'")
 
     if errors:
-        # print(errors)
+        print(errors)
         return 1
 
     return 0
