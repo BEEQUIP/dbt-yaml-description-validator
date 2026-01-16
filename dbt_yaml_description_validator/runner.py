@@ -12,7 +12,7 @@ from dbt_yaml_description_validator.validators import RULES
 yaml = YAML()
 yaml.preserve_quotes = True
 yaml.default_flow_style = False
-# yaml.width = 4096  # Prevent unwanted line wrapping
+yaml.width = 4096  # Prevent unwanted line wrapping
 # yaml.indent(mapping=2, sequence=2, offset=0)
 
 
