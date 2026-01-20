@@ -25,6 +25,11 @@ def fix(text: str) -> str:
     if not text.strip():
         return text
     
+    # Don't add period to quoted empty strings like '' or ""
+    stripped = text.strip()
+    if stripped in ("''", '""'):
+        return text
+    
     had_trailing_newline = text.endswith("\n")
 
     lines = text.rstrip("\n").splitlines()
