@@ -3,20 +3,24 @@ import re
 _DOUBLE_SPACES = re.compile(r"(?<!^)(?<!\n)[ \t]{2,}")
 
 def check(text: str) -> bool:
+    """
+    Checks whether a text contains a double space.
+    
+    :param text: Input text to be checked
+    :type text: str
+    :return: True if the text contains a double space. False else.
+    :rtype: bool
+    """
     return _DOUBLE_SPACES.search(text) is None
 
 
 def fix(text: str) -> str:
+    """
+    Removes the double spaces from a text.
+
+    :param text: Input text to be fixed
+    :type text: str
+    :return: The original text without double spaces.
+    :rtype: str
+    """
     return _DOUBLE_SPACES.sub(" ", text)
-    # # Only replace double spaces that are not at the beginning of lines
-    # # Split by lines, process each, and rejoin
-    # lines = text.split('\n')
-    # fixed_lines = []
-    # for line in lines:
-    #     # Find where actual content starts (skip leading spaces)
-    #     stripped = line.lstrip()
-    #     leading_spaces = len(line) - len(stripped)
-    #     # Apply fix only to the content part, not the indentation
-    #     fixed_content = _DOUBLE_SPACES.sub(" ", stripped)
-    #     fixed_lines.append(' ' * leading_spaces + fixed_content)
-    # return '\n'.join(fixed_lines)

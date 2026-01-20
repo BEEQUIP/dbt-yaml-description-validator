@@ -5,30 +5,52 @@ import re
 import sys
 from pathlib import Path
 from typing import Callable
-
 from ruamel.yaml import YAML
-
 from dbt_yaml_description_validator.validators import RULES
 
 yaml = YAML()
 yaml.preserve_quotes = True
 yaml.default_flow_style = False
-yaml.width = 4096  # Prevent unwanted line wrapping
-
+yaml.width = 4096
 
 def iter_schema_files(files: list[str]) -> list[Path]:
+    """
+    Maakt een lijst van paden naar alle files vanuit een opgegeven lijst. Als er geen lijst gegeven wordt, wordt er in het gehele project gezocht naar schema.yml files.
+    Make a list of paths to all files in the given files list. If no files list is given, the project is searched for schema.yml files.
+    
+    :param files: Lijst met bestanden
+    :type files: list[str]
+    :return: lijst met paden naar de bestancen
+    :rtype: list[Path]
+    """
     if files:
         return [Path(f) for f in files if Path(f).is_file()]
     return list(Path.cwd().rglob("schema.yml"))
 
 
 def load_yaml(path: Path) -> dict:
+    """
+    Load the yaml file into a python dictionary.
+
+    :param path: path naar de yaml file
+    :type path: Path
+    :return: python dictionary met inhoud van de yaml
+    :rtype: dict
+    """
     with path.open("r", encoding="utf-8") as f:
         data = yaml.load(f)
     return data or {}
 
 
 def iter_nodes(data: dict) -> list[dict]:
+    """
+    Go to the models/source level of the dictionary.
+    
+    :param data: Original dictionary of the yaml file
+    :type data: dict
+    :return: model/source level of the original yaml file
+    :rtype: list[dict]
+    """
     nodes = data.get("models")
     if nodes is None:
         nodes = data.get("sources")
@@ -36,16 +58,44 @@ def iter_nodes(data: dict) -> list[dict]:
 
 
 def iter_column_dicts(node: dict) -> list[dict]:
+    """
+    Go to the columns level of the dictionary.
+    
+    :param node: Models/source level dictionary
+    :type node: dict
+    :return: Column level dictionary
+    :rtype: list[dict]
+    """
     return node.get("columns") or []
 
 
 def validate_text(check: Callable[[str], bool], text: str | None) -> bool:
+    """
+    Method to apply a "Check" function to a text. 
+    
+    :param check: Check function
+    :type check: Callable[[str], bool]
+    :param text: Text to be checked
+    :type text: str | None
+    :return: True if the text satisfy the checking criterion. False else.
+    :rtype: bool
+    """
     if text is None or text == "":
         return True
     return bool(check(text))
 
 
 def apply_fix(fix: Callable[[str], str], text: str | None) -> tuple[str | None, bool]:
+    """
+    Method to apply a "Fix" function to a text.
+    
+    :param fix: Fix function
+    :type fix: Callable[[str], str]
+    :param text: Text to be fixed
+    :type text: str | None
+    :return: The fixed text and a boolean indicating if the text has changed
+    :rtype: tuple[str | None, bool]
+    """
     if text is None or text == "":
         return text, False
     new_text = fix(text)
@@ -53,14 +103,19 @@ def apply_fix(fix: Callable[[str], str], text: str | None) -> tuple[str | None, 
 
 
 def fix_yaml_file_in_place(path: Path, fix_fn: Callable[[str], str]) -> bool:
-    """Apply fixes to YAML file while preserving all formatting."""
+    """
+    Fixes the descriptions in a yaml file.
+
+    :param path: Path of the yaml file
+    :type path: Path
+    :param fix_fn: Fix function
+    :type fix_fn: Callable[[str], str]
+    :return: True if the yaml is fixed somewhere. False else.
+    :rtype: bool
+    """
     content = path.read_text(encoding="utf-8")
     new_content = content
     modified = False
-    
-    # Pattern to match description fields with their values
-    # Handles: description: <quoted or unquoted value>
-    #          description: | or > (block scalars)
     
     lines = content.split('\n')
     new_lines = []
@@ -70,33 +125,28 @@ def fix_yaml_file_in_place(path: Path, fix_fn: Callable[[str], str]) -> bool:
         line = lines[i]
         
         if 'description:' in line:
-            # Check if it's a quoted/simple value on the same line
+            # Check of een line start met "descripton: " 
             match = re.match(r'^(\s*description:\s*)(.*)$', line)
             if match:
                 prefix, value = match.groups()
                 
-                # If value is empty, it might be a block scalar on next line
                 if not value or value in ('|', '|-', '|+', '>', '>-', '>+'):
-                    # Block scalar indicator
                     new_lines.append(line)
                     i += 1
                     
-                    # Collect block content until we hit next key or end
                     block_start = i
                     base_indent = len(line) - len(line.lstrip())
                     
                     while i < len(lines):
                         next_line = lines[i]
                         
-                        # Empty line is part of block
                         if next_line.strip() == '':
                             new_lines.append(next_line)
                             i += 1
-                        # If line starts with less indentation, it's a new key
+                        # Block van lines stopt wanneer we op hetzelfde of hoger niveau dan "description: " zitten. Extra check: check of de line inderdaad een ":" bevat.
                         elif next_line and not next_line[0].isspace():
                             break
                         elif next_line and len(next_line) - len(next_line.lstrip()) <= base_indent and next_line.lstrip():
-                            # Check if it's a new key at same or lower level
                             if ':' in next_line and len(next_line) - len(next_line.lstrip()) <= base_indent:
                                 break
                             new_lines.append(next_line)
@@ -105,13 +155,10 @@ def fix_yaml_file_in_place(path: Path, fix_fn: Callable[[str], str]) -> bool:
                             new_lines.append(next_line)
                             i += 1
                     
-                    # Now process the block content
                     block_lines = new_lines[block_start:]
-                    # Join block lines, remove leading indent
-                    block_text = '\n'.join(block_lines)
                     block_indent = base_indent + 2
                     
-                    # Extract actual content (skip empty lines at start/end)
+                    # Remove indentation
                     stripped_lines = []
                     for bl in block_lines:
                         if bl.strip():
@@ -119,13 +166,13 @@ def fix_yaml_file_in_place(path: Path, fix_fn: Callable[[str], str]) -> bool:
                         else:
                             stripped_lines.append('')
                     
+                    # Try to fix the description
                     if stripped_lines:
                         block_content = '\n'.join(stripped_lines).rstrip()
                         fixed_block = fix_fn(block_content)
                         
                         if fixed_block != block_content:
                             modified = True
-                            # Rebuild block lines with fixed content
                             fixed_lines = fixed_block.split('\n')
                             new_block_lines = []
                             for fl in fixed_lines:
@@ -138,7 +185,6 @@ def fix_yaml_file_in_place(path: Path, fix_fn: Callable[[str], str]) -> bool:
                             del new_lines[block_start:]
                             new_lines.extend(new_block_lines)
                 else:
-                    # Simple value on same line (quoted or unquoted)
                     fixed_value = fix_fn(value)
                     if fixed_value != value:
                         modified = True
@@ -161,6 +207,12 @@ def fix_yaml_file_in_place(path: Path, fix_fn: Callable[[str], str]) -> bool:
 
 
 def main() -> int:
+    """
+    Main loop for fixing and checking description fields
+
+    :return: 0 if no errors are found, 1 if errors are found, 2 if something went wrong with the input
+    :rtype: int
+    """
     parser = argparse.ArgumentParser(description="Validate dbt schema.yml descriptions.")
     parser.add_argument("--rule", required=True, choices=sorted(RULES.keys()))
     parser.add_argument("--fix", action="store_true")
@@ -171,7 +223,7 @@ def main() -> int:
     check_fn = getattr(rule, "check", None)
     fix_fn = getattr(rule, "fix", None)
 
-    # Check of de functies wel callable zijn
+    # Checks for early break (no callable method provided, no files provided)
     if not callable(check_fn):
         print(f"Rule '{args.rule}' does not define a callable 'check(text)'.", file=sys.stderr)
         return 2
@@ -186,12 +238,11 @@ def main() -> int:
 
     errors: list[str] = []
 
+
     for path in schema_files:
         if args.fix:
-            # Use text-based approach to preserve formatting
             fix_yaml_file_in_place(path, fix_fn)
         else:
-            # Use YAML parsing for validation only
             try:
                 data = load_yaml(path)
             except Exception as exc:

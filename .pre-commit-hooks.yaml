@@ -1,12 +1,12 @@
-- id: check-description-ends-with-dot
-  name: Check descriptions end with a dot
-  entry: dbt-yaml-description-validator --rule dot
+- id: check-description-ends-with-period
+  name: Check descriptions end with a period
+  entry: dbt-yaml-description-validator --rule period
   language: python
   files: '(?i)schema\.ya?ml$'
 
-- id: check-description-ends-with-dot-fix
-  name: Check descriptions end with a dot (fix if failed)
-  entry: dbt-yaml-description-validator --rule dot --fix
+- id: check-description-ends-with-period-fix
+  name: Check descriptions end with a period (fix if failed)
+  entry: dbt-yaml-description-validator --rule period --fix
   language: python
   files: '(?i)schema\.ya?ml$'
 
@@ -34,7 +34,6 @@
   language: python
   files: '(?i)schema\.ya?ml$'
 
-# TODO: Namen consistent aanpassen
 - id: check-description-double-spaces
   name: Check descriptions do not contain double spaces
   entry: dbt-yaml-description-validator --rule spaces

@@ -1,19 +1,26 @@
-'''
-Check():    Checks whether the string is non empty and ends with a dot
-fix():      Adds a trailing dot to the last line in the description if it did not have one.
-
-Also removes leading white spaces.
-'''
-
-
 def check(text: str) -> bool:
+    """
+    Checks whether a description ends with a period.
+    
+    :param text: Input text to be checked.
+    :type text: str
+    :return: True if the text ends with a period. False else.
+    :rtype: bool
+    """
     lines = [line.rstrip() for line in text.rstrip().splitlines() if line.strip()]
     if not lines:
         return True
     return lines[-1].endswith(".")
 
-
 def fix(text: str) -> str:
+    """
+    Fixes a description to end with a period.
+    
+    :param text: Input text to be fixed
+    :type text: str
+    :return: The description with a trailing period
+    :rtype: bool
+    """
     had_trailing_newline = text.endswith("\n")
 
     lines = text.rstrip("\n").splitlines()
@@ -28,4 +35,3 @@ def fix(text: str) -> str:
     if had_trailing_newline:
         out += "\n"
     return out
-
