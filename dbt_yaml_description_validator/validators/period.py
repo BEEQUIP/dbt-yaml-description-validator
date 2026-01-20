@@ -21,6 +21,10 @@ def fix(text: str) -> str:
     :return: The description with a trailing period
     :rtype: bool
     """
+    # Don't add period to empty or whitespace-only descriptions
+    if not text.strip():
+        return text
+    
     had_trailing_newline = text.endswith("\n")
 
     lines = text.rstrip("\n").splitlines()
