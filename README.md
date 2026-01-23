@@ -4,6 +4,7 @@ A custom pre-commit repository where we manage what our descriptions should look
 
 
 The following code should be added to the pre-commit-config.yaml file of the repository. 
+
 fail_fast: true
 repos:
 - repo: https://github.com/BEEQUIP/dbt-yaml-description-validator

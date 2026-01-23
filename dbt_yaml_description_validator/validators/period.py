@@ -7,11 +7,11 @@ def _contains_list_items(text: str) -> bool:
 def check(text: str) -> bool:
     """
     Checks whether a description ends with a period.
-    Skip check if the text contains list items.
+    Skip check if the text contains list items or ends with ? or !.
     
     :param text: Input text to be checked.
     :type text: str
-    :return: True if the text ends with a period (or contains lists). False else.
+    :return: True if the text ends with a period, ?, or ! (or contains lists). False else.
     :rtype: bool
     """
     # Skip period check for descriptions with list items
@@ -21,13 +21,15 @@ def check(text: str) -> bool:
     lines = [line.rstrip() for line in text.rstrip().splitlines() if line.strip()]
     if not lines:
         return True
-    return lines[-1].endswith(".")
+    last_line = lines[-1]
+    return last_line.endswith(".") or last_line.endswith("?") or last_line.endswith("!")
 
 
 def fix(text: str) -> str:
     """
     Fixes a description to end with a period.
     Adds periods to texts without list items, and removes periods from texts with list items.
+    Does not add period if text ends with ?, !, ..., ?! or !?.
     
     :param text: Input text to be fixed
     :type text: str
@@ -55,8 +57,8 @@ def fix(text: str) -> str:
         if last.endswith("."):
             lines[-1] = last[:-1]
     else:
-        # If text doesn't contain list items, add period if missing
-        if not last.endswith("."):
+        # If text doesn't contain list items, add period if missing (and doesn't end with ? or !)
+        if not last.endswith(".") and not last.endswith("?") and not last.endswith("!") and not last.endswith("...") and not last.endswith("?!") and not last.endswith("!?"):
             lines[-1] = last + "."
 
     out = "\n".join(lines)
