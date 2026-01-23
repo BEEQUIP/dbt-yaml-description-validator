@@ -15,8 +15,8 @@ yaml.width = 4096
 
 def iter_schema_files(files: list[str]) -> list[Path]:
     """
-    Maakt een lijst van paden naar alle files vanuit een opgegeven lijst. Als er geen lijst gegeven wordt, wordt er in het gehele project gezocht naar schema.yml files.
-    Make a list of paths to all files in the given files list. If no files list is given, the project is searched for schema.yml files.
+    Maakt een lijst van paden naar alle files vanuit een opgegeven lijst. Als er geen lijst gegeven wordt, wordt er in het gehele project gezocht naar schema.y*ml files.
+    Make a list of paths to all files in the given files list. If no files list is given, the project is searched for schema.y*ml files.
     
     :param files: Lijst met bestanden
     :type files: list[str]
@@ -25,7 +25,7 @@ def iter_schema_files(files: list[str]) -> list[Path]:
     """
     if files:
         return [Path(f) for f in files if Path(f).is_file()]
-    return list(Path.cwd().rglob("schema.yml"))
+    return list(Path.cwd().rglob("schema.y*ml"))
 
 
 def load_yaml(path: Path) -> dict:
@@ -34,7 +34,7 @@ def load_yaml(path: Path) -> dict:
 
     :param path: path naar de yaml file
     :type path: Path
-    :return: python dictionary met inhoud van de yaml
+    :return: python dictionary with the contents of the yaml file
     :rtype: dict
     """
     with path.open("r", encoding="utf-8") as f:
@@ -83,23 +83,6 @@ def validate_text(check: Callable[[str], bool], text: str | None) -> bool:
     if text is None or text == "":
         return True
     return bool(check(text))
-
-
-def apply_fix(fix: Callable[[str], str], text: str | None) -> tuple[str | None, bool]:
-    """
-    Method to apply a "Fix" function to a text.
-    
-    :param fix: Fix function
-    :type fix: Callable[[str], str]
-    :param text: Text to be fixed
-    :type text: str | None
-    :return: The fixed text and a boolean indicating if the text has changed
-    :rtype: tuple[str | None, bool]
-    """
-    if text is None or text == "":
-        return text, False
-    new_text = fix(text)
-    return new_text, new_text != text
 
 
 def fix_yaml_file_in_place(path: Path, fix_fn: Callable[[str], str]) -> bool:
@@ -212,7 +195,7 @@ def main() -> int:
     :return: 0 if no errors are found, 1 if errors are found, 2 if something went wrong with the input
     :rtype: int
     """
-    parser = argparse.ArgumentParser(description="Validate dbt schema.yml descriptions.")
+    parser = argparse.ArgumentParser(description="Validate dbt schema.y*ml descriptions.")
     parser.add_argument("--rule", required=True, choices=sorted(RULES.keys()))
     parser.add_argument("--fix", action="store_true")
     parser.add_argument("files", nargs="*")
