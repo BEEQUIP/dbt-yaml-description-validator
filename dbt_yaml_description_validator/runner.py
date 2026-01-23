@@ -15,7 +15,7 @@ yaml.width = 4096
 yaml.indent(mapping=2, sequence=2, offset=2)
 yaml.explicit_start = False
 yaml.allow_unicode = True
-yaml.map_indent=2
+yaml.sequence_indent=2
 
 def iter_schema_files(files: list[str]) -> list[Path]:
     """
