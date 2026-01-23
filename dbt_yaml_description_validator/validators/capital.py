@@ -1,6 +1,6 @@
 def check(text: str) -> bool:
     """
-    Checks whether a description start with a capital letter.
+    Checks whether a description starts with a capital letter.
     
     :param text: The input text to be checked
     :type text: str
@@ -13,7 +13,7 @@ def check(text: str) -> bool:
 
 def fix(text: str) -> str:
     """
-    Fixes a description to start with a capital letter.
+    Fixes a description to starts with a capital letter.
     
     :param text: The input text to be fixed
     :type text: str

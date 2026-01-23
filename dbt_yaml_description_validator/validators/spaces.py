@@ -8,7 +8,7 @@ def check(text: str) -> bool:
     
     :param text: Input text to be checked
     :type text: str
-    :return: True if the text contains a double space. False else.
+    :return: True if the text contains no double space. False else.
     :rtype: bool
     """
     return _DOUBLE_SPACES.search(text) is None

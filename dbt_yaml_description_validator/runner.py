@@ -103,105 +103,30 @@ def apply_fix(fix: Callable[[str], str], text: str | None) -> tuple[str | None, 
 
 
 def fix_yaml_file_in_place(path: Path, fix_fn: Callable[[str], str]) -> bool:
-    """
-    Fixes the descriptions in a yaml file.
-
-    :param path: Path of the yaml file
-    :type path: Path
-    :param fix_fn: Fix function
-    :type fix_fn: Callable[[str], str]
-    :return: True if the yaml is fixed somewhere. False else.
-    :rtype: bool
-    """
-    content = path.read_text(encoding="utf-8")
-    new_content = content
+    """Fixes descriptions in a yaml file using ruamel.yaml."""
+    data = load_yaml(path)  # Uses ruamel.yaml
     modified = False
     
-    lines = content.split('\n')
-    new_lines = []
-    i = 0
-    
-    while i < len(lines):
-        line = lines[i]
+    nodes = iter_nodes(data)
+    for node in nodes:
+        desc = node.get("description")
+        if desc:
+            fixed_desc, changed = apply_fix(fix_fn, desc)
+            if changed:
+                node["description"] = fixed_desc
+                modified = True
         
-        if 'description:' in line:
-            # Check of een line start met "descripton: " 
-            match = re.match(r'^(\s*description:\s*)(.*)$', line)
-            if match:
-                prefix, value = match.groups()
-                
-                if not value or value in ('|', '|-', '|+', '>', '>-', '>+'):
-                    new_lines.append(line)
-                    i += 1
-                    
-                    block_start = i
-                    base_indent = len(line) - len(line.lstrip())
-                    
-                    while i < len(lines):
-                        next_line = lines[i]
-                        
-                        if next_line.strip() == '':
-                            new_lines.append(next_line)
-                            i += 1
-                        # Block van lines stopt wanneer we op hetzelfde of hoger niveau dan "description: " zitten. Extra check: check of de line inderdaad een ":" bevat.
-                        elif next_line and not next_line[0].isspace():
-                            break
-                        elif next_line and len(next_line) - len(next_line.lstrip()) <= base_indent and next_line.lstrip():
-                            if ':' in next_line and len(next_line) - len(next_line.lstrip()) <= base_indent:
-                                break
-                            new_lines.append(next_line)
-                            i += 1
-                        else:
-                            new_lines.append(next_line)
-                            i += 1
-                    
-                    block_lines = new_lines[block_start:]
-                    block_indent = base_indent + 2
-                    
-                    # Remove indentation
-                    stripped_lines = []
-                    for bl in block_lines:
-                        if bl.strip():
-                            stripped_lines.append(bl[block_indent:] if len(bl) > block_indent else bl.lstrip())
-                        else:
-                            stripped_lines.append('')
-                    
-                    # Try to fix the description
-                    if stripped_lines:
-                        block_content = '\n'.join(stripped_lines).rstrip()
-                        fixed_block = fix_fn(block_content)
-                        
-                        if fixed_block != block_content:
-                            modified = True
-                            fixed_lines = fixed_block.split('\n')
-                            new_block_lines = []
-                            for fl in fixed_lines:
-                                if fl:
-                                    new_block_lines.append(' ' * block_indent + fl)
-                                else:
-                                    new_block_lines.append('')
-                            
-                            # Replace the old block lines with new ones
-                            del new_lines[block_start:]
-                            new_lines.extend(new_block_lines)
-                else:
-                    fixed_value = fix_fn(value)
-                    if fixed_value != value:
-                        modified = True
-                        new_lines.append(prefix + fixed_value)
-                    else:
-                        new_lines.append(line)
-                    i += 1
-            else:
-                new_lines.append(line)
-                i += 1
-        else:
-            new_lines.append(line)
-            i += 1
+        for col in iter_column_dicts(node):
+            cdesc = col.get("description")
+            if cdesc:
+                fixed_desc, changed = apply_fix(fix_fn, cdesc)
+                if changed:
+                    col["description"] = fixed_desc
+                    modified = True
     
     if modified:
-        new_content = '\n'.join(new_lines)
-        path.write_text(new_content, encoding="utf-8")
+        with path.open("w", encoding="utf-8") as f:
+            yaml.dump(data, f)
     
     return modified
 
@@ -266,7 +191,8 @@ def main() -> int:
                         errors.append(f"{path}: Column '{col_name}' failed rule '{args.rule}'")
 
     if errors:
-        print(errors)
+        for error in errors:
+            print(error, file=sys.stderr)
         return 1
 
     return 0
