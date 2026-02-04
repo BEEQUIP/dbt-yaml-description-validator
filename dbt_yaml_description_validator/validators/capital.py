@@ -18,7 +18,7 @@ def fix(text: str) -> str:
     :param text: The input text to be fixed
     :type text: str
     :return: The corrected text starting with a capital letter.
-    :rtype: bool
+    :rtype: str
     """
     stripped = text.lstrip()
     if not stripped:

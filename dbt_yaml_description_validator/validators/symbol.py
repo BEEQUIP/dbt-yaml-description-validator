@@ -8,7 +8,7 @@ def check(text: str) -> bool:
 
     :param text: Input text to be checked
     :type text: str
-    :return: True if the description contains one of the symbols. False else.
+    :return: True if the description does not contain any of the symbols. False else.
     :rtype: bool
     """
     return not bool(SYMBOL_PATTERN.search(text))
